@@ -16,6 +16,7 @@ class Calendar extends React.Component {
           events,
           isEventModalOpen: false,
           isEditModalOpen: false,
+          currentEvent: null,
         }
     }
     toggleEventModal = event => {
@@ -55,7 +56,7 @@ class Calendar extends React.Component {
               onSelectEvent={event => alert(event.title)}
               onSelectSlot={this.toggleEventModal}
             />
-            {this.state.isEventModalOpen ? <EventForm open={this.state.isEventModalOpen} toggle={this.toggleEventModal} events={events}/>: null}
+            {this.state.isEventModalOpen ? <EventForm open={this.state.isEventModalOpen} toggle={this.toggleEventModal} events={this.state.currentEvent}/>: null}
             </div>
         )
       }
