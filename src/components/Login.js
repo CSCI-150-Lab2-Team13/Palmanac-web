@@ -41,14 +41,14 @@ class Login extends Component {
       render() {
         return (
           <div>
-              <div>
-               <TextField
-                 type="email"
-                 label="Email"
-                 onChange = {this.handleChange('email')}
-                 />
-               <br/>
-               <FormControl >
+            <div>
+            <TextField
+              type="email"
+              label="Email"
+              onChange = {this.handleChange('email')}
+            />
+            <br/>
+            <FormControl >
               <InputLabel htmlFor="adornment-password">Password</InputLabel>
               <Input
                 id="adornment-password"
@@ -56,23 +56,22 @@ class Login extends Component {
                 value={this.state.password}
                 onChange={this.handleChange('password')}
                 endAdornment={
-                    <InputAdornment position="end">
-                    <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={this.handleClickShowPassword}
-                    >
-                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                    </InputAdornment>
+                  <InputAdornment position="end">
+                  <IconButton
+                  aria-label="Toggle password visibility"
+                  onClick={this.handleClickShowPassword}
+                  >
+                  {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                  </InputAdornment>
                 }
-                />
-        </FormControl>
-                 <br/>
-                 <Button label="Submit" variant='contained' style={style} onClick={this.login}>
-                    Login
-                 </Button>
-             </div>
-             
+              />
+            </FormControl>
+            <br/>
+            <Button label="Submit" variant='contained' style={style} onClick={this.login}>
+              Login
+            </Button>
+            </div>       
           </div>
         );
       }
