@@ -7,69 +7,119 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import FormControl from '@material-ui/core/FormControl';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import moment from 'moment';
 
 class EventForm extends React.Component {
   constructor(props){
     super(props);
-    this.setDate = this.setDate.bind(this);
+    this.setDate = this.setStartDate.bind(this);
+    this.setDate = this.setEndDate.bind(this);
   }
+
   state = {
-    events: {}
+    title: '',
+    event: {}
   };
+  
   componentDidMount() {
     this.setState({
-      events: this.props.events,
+      event: {
+        ...this.props.events,
+        start: moment(this.props.events.start).format(),
+        end: moment(this.props.events.end).format()
+      }
     });
   };
 
-  setDate = date => {
+  setStartDate = date => {
+    if(moment(date.format()).isAfter(this.state.event.end)){
       this.setState({
-        events: {
-          ...this.state.events,
-          start: date._d,
-          end: date._d
+        event: {
+          ...this.state.event,
+          start: date.format(),
+          end: date.format()
         }
       })
+    } else {
+      this.setState({
+        event: {
+          ...this.state.event,
+          start: date.format()
+        }
+        })
+    }
   };
 
+  setEndDate = date => {
+    
+    if(moment(date.format()).isBefore(this.state.event.start)){
+      this.setState({
+        event: {
+          ...this.state.event,
+          start: date.format(),
+          end: date.format()
+        }
+      })
+    } else {
+      this.setState({
+        event: {
+          ...this.state.event,
+          end: date.format()
+        }
+        })
+    }
+  };
+
+  handleChange = input => e => {
+    this.setState({ [input]: e.target.value})
+}
+
   render() {
-    const sd = this.state.events;
-    console.log(sd.start);
     return (
       <div>
         <Dialog
           open={this.props.open}
           onClose={this.props.toggle}
           aria-labelledby="form-dialog-title"
+          fullWidth={true}
         >
           <DialogTitle id="form-dialog-title">Add Event</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-             {JSON.stringify(this.state.events)} 
-            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Description"
-              fullWidth
-            />
-          </DialogContent>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-          <Fragment>
-            <div className="picker">
-              <DatePicker
-              label="Start Date"
-              value={sd.start}
-              onChange={this.setDate}
-              animateYearScrolling
+              label="Title"
+              multiline={true}
+              onChange={this.handleChange('title')}
               />
-            </div>
-          </Fragment>
-          </MuiPickersUtilsProvider>
+
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Fragment>
+                <div className="picker">
+                <DatePicker
+                label="Start Date"
+                value={this.state.event.start}
+                onChange={this.setStartDate}
+                animateYearScrolling
+                />
+                </div>
+              </Fragment>
+              <Fragment>
+                <div className="picker">
+                <DatePicker
+                label="End Date"
+                value={this.state.event.end}
+                onChange={this.setEndDate}
+                animateYearScrolling
+                />
+                </div>
+              </Fragment>
+            </MuiPickersUtilsProvider> 
+          </DialogContent>
           <DialogActions>
             <Button onClick={this.props.toggle} color="primary">
               Cancel
