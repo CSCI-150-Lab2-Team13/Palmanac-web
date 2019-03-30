@@ -11,12 +11,15 @@ import FormControl from '@material-ui/core/FormControl';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import moment from 'moment';
+import firebaseAPI from '../firebase/firestoreAPI';
+import fire from '../firebase/Fire';
 
 class EventForm extends React.Component {
   constructor(props){
     super(props);
     this.setDate = this.setStartDate.bind(this);
     this.setDate = this.setEndDate.bind(this);
+    this.saveEvent = this.saveEvent.bind(this);
   }
 
   state = {
@@ -77,6 +80,11 @@ class EventForm extends React.Component {
     this.setState({ [input]: e.target.value})
 }
 
+  saveEvent() {
+    console.log(fire.auth().currentUser.uid);
+    firebaseAPI.addEvent(fire.auth().currentUser.uid, this.state);
+  }
+
   render() {
     return (
       <div>
@@ -124,7 +132,7 @@ class EventForm extends React.Component {
             <Button onClick={this.props.toggle} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.props.toggle} color="primary">
+            <Button onClick={this.saveEvent} color="primary">
               Save Event
             </Button>
           </DialogActions>

@@ -17,4 +17,19 @@ export default class firestoreAPI {
             console.error("need to pass an object with existing id property");
         }
     }
+
+    static addEvent(userId, event) {
+        if (userId) {
+            return firestore().collection('users').doc(userId).collection('events').add(event)
+                .then(() => {
+                    console.log("Document successfully written!");
+                })
+                .catch(error => {
+                    console.error("Error writing document: ", error);
+                });
+        } else {
+            console.error("event error");
+        }
+    }
+
 }
