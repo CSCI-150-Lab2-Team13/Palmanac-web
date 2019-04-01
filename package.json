@@ -14,7 +14,8 @@
     "react": "^16.8.4",
     "react-big-calendar": "^0.20.3",
     "react-dom": "^16.8.4",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "rrule": "^2.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
