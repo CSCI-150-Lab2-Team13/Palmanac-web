@@ -1,4 +1,9 @@
+    
 import React, { Component } from 'react';
+import fire from '../firebase/Fire';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
@@ -8,7 +13,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import fire from '../firebase/Fire';
 
 class Login extends Component {
     constructor(props) {
@@ -19,9 +23,12 @@ class Login extends Component {
       this.state = {
         email: '',
         password: '',
-        showPassword: false
+        showPassword: false,
+        submitted: false,
       };
+      this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     login = e => {
         e.preventDefault();
         fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -32,50 +39,66 @@ class Login extends Component {
                 console.log(error);
             });
     }
-    handleChange = input => e => {
-        this.setState({ [input]: e.target.value})
-    }
+
+    handleSubmit = input => e =>  {
+      this.setState({ [input]: e.target.value})
+      this.setState({ submitted: true }, () => {
+          this.setState({ submitted: false });
+      });
+  }
+
     handleClickShowPassword = () => {
       this.setState(state => ({ showPassword: !state.showPassword }));
-      };
+    };
+
       render() {
+        const { email, password, submitted } = this.state
         return (
           <div>
             <div>
-            <TextField
-              type="email"
-              label="Email"
-              onChange = {this.handleChange('email')}
-            />
-            <br/>
-            <FormControl >
-              <InputLabel htmlFor="adornment-password">Password</InputLabel>
-              <Input
-                id="adornment-password"
-                type={this.state.showPassword ? 'text' : 'password'}
-                value={this.state.password}
-                onChange={this.handleChange('password')}
-                endAdornment={
-                  <InputAdornment position="end">
+            <ValidatorForm ref="form">
+                          <TextValidator
+                          label="Email"
+                          onChange={this.handleSubmit('email')}
+                          name="email"
+                          value={email}
+                          validators={['required', 'isEmail']}
+                          errorMessages={['this field is required', 'email is not valid']}
+                      />
+                      <br />
+                      <TextValidator 
+                          label="Password"
+                          onChange={this.handleSubmit('password')}
+                          type={this.state.showPassword ? 'text' : 'password'}
+                          name="password"
+                          value={password}
+                          validators={['required']}
+                          errorMessages={['this field is required']}
+                      />
+                      <br />
+                      <Button style = {style} variant="contained" type="submit" disabled={submitted}> 
+                        { (submitted && 'Logging in') || (!submitted && 'Login') }
+                      </Button>
+
+                    </ValidatorForm>
+            <FormControl>
                   <IconButton
                   aria-label="Toggle password visibility"
                   onClick={this.handleClickShowPassword}
                   >
                   {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
-                  </InputAdornment>
-                }
-              />
             </FormControl>
             <br/>
             <Button label="Submit" variant='contained' style={style} onClick={this.login}>
               Login
             </Button>
-            </div>       
-          </div>
+            </div>  
+            </div>
         );
       }
     }
+
 const style = {
     margin: 15,
 };
