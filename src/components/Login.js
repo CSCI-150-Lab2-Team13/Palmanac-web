@@ -24,7 +24,7 @@ class Login extends Component {
         email: '',
         password: '',
         showPassword: false,
-        submitted: false,
+        submitted: false
       };
       this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -37,6 +37,7 @@ class Login extends Component {
             })
             .catch(error => {
                 console.log(error);
+                alert(console.log(error));
             });
     }
 
@@ -75,20 +76,18 @@ class Login extends Component {
                           validators={['required']}
                           errorMessages={['this field is required']}
                       />
+                      <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={this.handleClickShowPassword}
+                       >
+                          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
                       <br />
-                      <Button style = {style} variant="contained" type="submit" disabled={submitted}> 
+
+                      <Button id='logins' style = {style} variant="contained" type="submit" disabled={submitted}> 
                         { (submitted && 'Logging in') || (!submitted && 'Login') }
                       </Button>
-
                     </ValidatorForm>
-            <FormControl>
-                  <IconButton
-                  aria-label="Toggle password visibility"
-                  onClick={this.handleClickShowPassword}
-                  >
-                  {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-            </FormControl>
             <br/>
             <Button label="Submit" variant='contained' style={style} onClick={this.login}>
               Login
@@ -98,6 +97,7 @@ class Login extends Component {
         );
       }
     }
+
 
 const style = {
     margin: 15,
