@@ -15,14 +15,7 @@ class Home extends Component {
         return (
             <div>
                 <ButtonAppBar logout={this.logout}/>
-                <Calendar/>
-{/*                 <React.Fragment>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <EventForm />
-                    </MuiPickersUtilsProvider>
-                </React.Fragment>
-                <h1>hello  {this.props.user.email}</h1> */}
-
+                <Calendar user={this.props.user}/>
             </div>
         )
     }
