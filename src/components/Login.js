@@ -37,23 +37,21 @@ class Login extends Component {
             })
             .catch(error => {
                 console.log(error);
-              /*
-                ValidatorForm.addValidationRule('isSubmitProper', (value) => {
-                  if ((error.code != "auth/wrong-password") && (error.code != "auth/user-not-found") && (error.code != "auth/too-many-requests")) { 
-                    this.state.subbool = true; return true; }
-                  else this.state.subbool = false; return false;
-                  
-              });
-
-                alert("bool of subbool: " + this.state.subbool);
-                */
-            });
+                  if ((error.code == "auth/wrong-password") || (error.code == "auth/user-not-found") || (error.code == "auth/too-many-requests")) { 
+                    this.state.subbool = false;}
+                  else {this.state.subbool = true;}
+            }); 
       }
-  
 
+    componentDidMount(){
+      ValidatorForm.addValidationRule('isSubmitProper', (value) => {
+        return this.state.subbool;
+    });
+    }
 
     handleChange = input => e =>  {
       this.setState({ [input]: e.target.value})
+      this.setState({subbool: true})
     }
 
     handleSubmit = e => {
@@ -61,15 +59,14 @@ class Login extends Component {
         this.login(e);
         this.setState({ submitted: false });
     });
-    
-  }
+    }
 
     handleClickShowPassword = () => {
       this.setState(state => ({ showPassword: !state.showPassword }));
     };
-
+    
       render() {
-        const { email, password } = this.state
+        const { email, password } = this.state;
         return (
             <div>
             <ValidatorForm ref="form">
@@ -88,7 +85,7 @@ class Login extends Component {
                           type={this.state.showPassword ? 'text' : 'password'}
                           name="password"
                           value={password}
-                          validators={['required']}//,'isSubmitProper'
+                          validators={['required','isSubmitProper']}
                           errorMessages={['Password cannot be empty','Invalid Email or Password']}
                       />
                       <IconButton
@@ -114,21 +111,3 @@ const style = {
     margin: 15,
 };
 export default Login;
-
-/*
-                if(error.code == "auth/user-not-found"){ this.state.boolemail = false }
-                else {this.state.boolemail = true}
-                if(error.code == "auth/wrong-password"){ this.state.boolpassw = false }
-                else {this.state.boolpassw = true}
-                alert("bool of email: " + this.state.boolemail + ", bool of password: " + this.state.boolpassw);
-
-                    componentWillMount() {
-        // custom rule will have name 'isPasswordMatch'
-        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            if (value !== this.state.formData.password) {
-                return false;
-            }
-            return true;
-        });
-    }
-    */
