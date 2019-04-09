@@ -17,7 +17,7 @@ function RecurrenceMenu(props) {
     const dayOfMonth = moment(props.day).format("MMMM D");
     const startDay = moment(props.day).format();
     const [recurrence, setRecurrence] = useState('');
-    const [occurences, setOccurences] = useState(0);
+    const [occurences, setOccurences] = useState(1);
     const [customRecurr, setCustomRecurr] = useState(false);
     const recurRule = (freq, occur) => {
         setRecurrence(freq);
@@ -72,6 +72,7 @@ function RecurrenceMenu(props) {
                 InputLabelProps={{
                     shrink: true,
                 }}
+                inputProps={{ min: 1 }}
                 margin="none"
                 
         />

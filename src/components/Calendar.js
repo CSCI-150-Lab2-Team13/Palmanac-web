@@ -6,7 +6,6 @@ import './Calendar.css';
 import CalendarEntry from './CalendarEntry';
 import { firestore } from 'firebase';
 import {rrulestr} from 'rrule';
-
 const localizer = BigCalendar.momentLocalizer(moment);
 
 class Calendar extends React.Component {
