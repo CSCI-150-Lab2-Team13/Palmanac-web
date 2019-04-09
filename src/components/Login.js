@@ -5,11 +5,11 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import InputAdornment from '@material-ui/core/InputAdornment';
+//import TextField from '@material-ui/core/TextField';
+//import Input from '@material-ui/core/Input';
+//import InputLabel from '@material-ui/core/InputLabel';
+//import FormControl from '@material-ui/core/FormControl';
+//import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,15 +17,11 @@ import IconButton from '@material-ui/core/IconButton';
 class Login extends Component {
     constructor(props) {
       super(props);
-      //this.login = this.login.bind(this);
-      //this.handleChange = this.handleChange.bind(this);
-      //this.signup = this.signup.bind(this);
       this.state = {
         email: '',
         password: '',
         showPassword: false,
         submitted: false,
-        subbool: false
       };
     }
 
@@ -37,21 +33,24 @@ class Login extends Component {
             })
             .catch(error => {
                 console.log(error);
-                  if ((error.code == "auth/wrong-password") || (error.code == "auth/user-not-found") || (error.code == "auth/too-many-requests")) { 
-                    this.state.subbool = false;}
-                  else {this.state.subbool = true;}
-            }); 
+                  if ((error.code == "auth/wrong-password") || (error.code == "auth/user-not-found") || (error.code == "auth/too-many-requests")) {  
+                    ValidatorForm.addValidationRule('isSubmitProper', (value) => {
+                      return false;
+                  });
+                }
+                  else {
+                    ValidatorForm.addValidationRule('isSubmitProper', (value) => {
+                      return true;
+                  });
+                }
+            });
       }
-
-    componentDidMount(){
-      ValidatorForm.addValidationRule('isSubmitProper', (value) => {
-        return this.state.subbool;
-    });
-    }
 
     handleChange = input => e =>  {
       this.setState({ [input]: e.target.value})
-      this.setState({subbool: true})
+      ValidatorForm.addValidationRule('isSubmitProper', (value) => {
+        return true;
+    });
     }
 
     handleSubmit = e => {
@@ -63,7 +62,7 @@ class Login extends Component {
 
     handleClickShowPassword = () => {
       this.setState(state => ({ showPassword: !state.showPassword }));
-    };
+    }
     
       render() {
         const { email, password } = this.state;
@@ -75,8 +74,8 @@ class Login extends Component {
                           onChange={this.handleChange('email')}
                           name="email"
                           value={email}
-                          validators={['required', 'isEmail']}//, 'isSubmitProper'
-                          errorMessages={['Email cannot be empty', 'Email is not valid', "Invalid Email or Password"]}
+                          validators={['required', 'isEmail']}
+                          errorMessages={['Email cannot be empty', 'Email is not valid']}
                       />
                       <br />
                       <TextValidator 
