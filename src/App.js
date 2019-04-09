@@ -41,16 +41,15 @@ class App extends Component {
       }
     });
   }
-
+  
   componentDidMount(){
     this.authListener();
   }
   render() {
     return (
       <MuiThemeProvider theme={theme}>
+       {this.state.user ? <Home user={this.state.user.uid}/> : <LoginTabs />}
        
-       {this.state.user ? <Home user={this.state.user}/> : <LoginTabs />}
-        
         </MuiThemeProvider >
     );
   }

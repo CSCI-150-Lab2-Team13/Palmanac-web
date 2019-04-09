@@ -1,15 +1,12 @@
 import React, { Fragment } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import moment from 'moment';
 import firebaseAPI from '../firebase/firestoreAPI';
 import fire from '../firebase/Fire';
-
-
 import EventTabs from './EventTabs';
-import Select from '@material-ui/core/Select';
+
 
 class CalendarEntry extends React.Component {
   constructor(props){
@@ -22,57 +19,57 @@ class CalendarEntry extends React.Component {
 
   state = {
     title: '',
-    event: {},
+    start: '',
+    end: '',
+    desc: '',
+    rrule: '',
     recurring: false
   };
   
   componentDidMount() {
     this.setState({
-      event: {
-        ...this.props.events,
-        start: moment(this.props.events.start).format(),
-        end: moment(this.props.events.end).format()
-      }
+      ...this.state,
+      start: moment(this.props.events.start).format(),
+      end: moment(this.props.events.end).format()
     });
   };
 
   setStartDate = date => {
-    if(moment(date.format()).isAfter(this.state.event.end)){
+    if(moment(date.format()).isAfter(this.state.end)){
       this.setState({
-        event: {
-          ...this.state.event,
-          start: date.format(),
-          end: date.format()
-        }
+        ...this.state,
+        start: date.format(),
+        end: date.format()
       })
     } else {
       this.setState({
-        event: {
-          ...this.state.event,
+          ...this.state,
           start: date.format()
-        }
         })
     }
   };
 
   setEndDate = date => {
     
-    if(moment(date.format()).isBefore(this.state.event.start)){
+    if(moment(date.format()).isBefore(this.state.start)){
       this.setState({
-        event: {
-          ...this.state.event,
-          start: date.format(),
-          end: date.format()
-        }
-      })
+        ...this.state,
+        start: date.format(),
+        end: date.format()
+      });
     } else {
       this.setState({
-        event: {
-          ...this.state.event,
-          end: date.format()
-        }
+        ...this.state,
+        end: date.format()
         })
     }
+  };
+
+  setRrule = rrule => {
+    this.setState({
+      ...this.state,
+      rrule: rrule
+    })
   };
 
   handleChange = input => e => {
@@ -83,9 +80,10 @@ class CalendarEntry extends React.Component {
     this.setState({ [name]: e.target.checked});
   } 
 
-  saveEvent() {
-    console.log(fire.auth().currentUser.uid);
-    //firebaseAPI.addEvent(fire.auth().currentUser.uid, this.state);
+  saveEvent(e) {
+    console.log(this.state);
+    firebaseAPI.addEvent(fire.auth().currentUser.uid, this.state);
+    this.props.toggle(e)
   }
 
   render() {
@@ -101,10 +99,12 @@ class CalendarEntry extends React.Component {
         <EventTabs 
           handleChange={this.handleChange}
           setStartDate={this.setStartDate}
-          event={this.state.event}
+          start={this.state.start}
+          end={this.state.end}
           setEndDate={this.setEndDate}
           handleCheck={this.handleCheck}
           recurring={this.state.recurring}
+          setRrule={this.setRrule}
 
         />
         

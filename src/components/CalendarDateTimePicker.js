@@ -6,7 +6,7 @@ import MomentUtils from '@date-io/moment';
 
 import {RecurrenceMenu} from './RecurrenceMenu';
 import DateRange from '@material-ui/icons/DateRange';
-import Paper from '@material-ui/core/Paper';
+
 
 
 function EventDTPicker(props) {
@@ -18,14 +18,15 @@ function EventDTPicker(props) {
             <InlineDatePicker
               variant='outlined'
               label="Start Date"
-              value={props.event.start}
+              value={props.start}
               onChange={props.setStartDate}
               animateYearScrolling
             />
             <InlineTimePicker
+              style={{paddingLeft: 1}}
               variant='outlined'
               label="Start Time"
-              value={props.event.start}
+              value={props.start}
               onChange={props.setStartDate} 
               />
             </div>
@@ -38,14 +39,15 @@ function EventDTPicker(props) {
                 <InlineDatePicker
                   variant='outlined'
                   label="End Date"
-                  value={props.event.end}
+                  value={props.end}
                   onChange={props.setEndDate}
                   animateYearScrolling
                 />
                 <InlineTimePicker 
+                  style={{paddingLeft: 1}}
                   variant='outlined' 
                   label="End time" 
-                  value={props.event.end} 
+                  value={props.end} 
                   onChange={props.setEndDate} 
                 />
                 </div>
@@ -53,7 +55,8 @@ function EventDTPicker(props) {
             <RecurrenceMenu 
               handleCheck={props.handleCheck}
               recurring={props.recurring}
-              day={props.event.start}
+              day={props.start}
+              setRrule={props.setRrule}
               />
 
               </Fragment>
@@ -71,14 +74,15 @@ function ToDoDTPicker(props) {
               <InlineDatePicker
                 variant='outlined'
                 label="Start Date"
-                value={props.event.start}
+                value={props.start}
                 onChange={props.setStartDate}
                 animateYearScrolling
               />
-              <InlineTimePicker 
+              <InlineTimePicker
+                style={{paddingLeft: 1}} 
                 variant='outlined'
                 label="Start Time"
-                value={props.event.start}
+                value={props.start}
                 onChange={props.setStartDate}
               />
               </div>
@@ -86,7 +90,8 @@ function ToDoDTPicker(props) {
               <RecurrenceMenu 
               handleCheck={props.handleCheck}
               recurring={props.recurring}
-              day={props.event.start}
+              day={props.start}
+              setRrule={props.setRrule}
               />
             </Fragment>
 

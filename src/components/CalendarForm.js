@@ -26,11 +26,13 @@ function EventForm(props) {
               /></Paper> <br/><br/>
 
                 <EventDTPicker 
-                  event={props.event}
+                  start={props.start}
+                  end={props.end}
                   setStartDate={props.setStartDate}
                   setEndDate={props.setEndDate}
                   handleCheck={props.handleCheck}
                   recurring={props.recurring}
+                  setRrule={props.setRrule}
                   />
                 
           </DialogContent></Paper>
@@ -57,10 +59,11 @@ return (
             /></Paper> <br/><br/>
 
               <ToDoDTPicker
-                  event={props.event}
+                  start={props.start}
                   setStartDate={props.setStartDate}
                   handleCheck={props.handleCheck}
                   recurring={props.recurring}
+                  setRrule={props.setRrule}
                   />
         </DialogContent></Paper>
         </Fragment>
