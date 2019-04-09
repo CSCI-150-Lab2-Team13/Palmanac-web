@@ -23,6 +23,7 @@ function EventDTPicker(props) {
               animateYearScrolling
             />
             <InlineTimePicker
+              style={{paddingLeft: 1}}
               variant='outlined'
               label="Start Time"
               value={props.start}
@@ -43,6 +44,7 @@ function EventDTPicker(props) {
                   animateYearScrolling
                 />
                 <InlineTimePicker 
+                  style={{paddingLeft: 1}}
                   variant='outlined' 
                   label="End time" 
                   value={props.end} 
@@ -76,7 +78,8 @@ function ToDoDTPicker(props) {
                 onChange={props.setStartDate}
                 animateYearScrolling
               />
-              <InlineTimePicker 
+              <InlineTimePicker
+                style={{paddingLeft: 1}} 
                 variant='outlined'
                 label="Start Time"
                 value={props.start}
