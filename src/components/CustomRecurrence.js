@@ -31,8 +31,7 @@ import AlphaFcircle from 'mdi-material-ui/AlphaFcircle';
 import AlphaFcircleOutline from 'mdi-material-ui/AlphaFcircleOutline';
 import AlphaScircle from 'mdi-material-ui/AlphaScircle';
 import AlphaScircleOutline from 'mdi-material-ui/AlphaScircleOutline';
-import { Day } from 'material-ui-pickers';
-import { weekdaysMin } from 'moment';
+import { InlineDatePicker } from 'material-ui-pickers';
 
 export default class CustomRecurrence extends React.Component {
   constructor(props){
@@ -41,8 +40,9 @@ export default class CustomRecurrence extends React.Component {
       open: this.props.open,
       frequency: RRule.DAILY,
       interval: 1,
-      occurences: '',
+      occurences: 1,
       wkdays: [],
+      until: this.props.start,
       endsOn: '',
       day: this.props.start
 
@@ -73,10 +73,18 @@ export default class CustomRecurrence extends React.Component {
   };
 
   handleChange = input => e => {
+    if(input == 'On'){
+      console.log(e)
+    this.setState({
+      ...this.state, 
+      until: e.format()
+    })
+  } else {
     this.setState({
       ...this.state, 
       [input]: e.target.value
     })
+  }
 };
 
   setDayOfWeek = (day)  => {
@@ -103,15 +111,38 @@ export default class CustomRecurrence extends React.Component {
     const interval = this.state.interval;
     const occurences = this.state.occurences;
     const wkdays = this.state.wkdays;
+    const endsOn = this.state.endsOn;
+    const until = this.state.until;
 
-    const rule = new RRule({
-      freq: freq,
-      interval: interval,
-      byweekday: wkdays,
-      dtstart: new Date(moment(this.state.day).utc()),
-      count: occurences
-  });
-  this.props.setRrule(rule.toString());
+    if(endsOn=='Never'){
+      const rule = new RRule({
+        freq: freq,
+        interval: interval,
+        byweekday: wkdays,
+        dtstart: new Date(moment(this.state.day).utc()),
+        count: occurences
+      });
+      this.props.setRrule(rule.toString());
+    } else if (endsOn=='On'){
+        const rule = new RRule({
+          freq: freq,
+          interval: interval,
+          byweekday: wkdays,
+          dtstart: new Date(moment(this.state.day).utc()),
+          until: new Date(moment(until).utc()),
+        });
+        this.props.setRrule(rule.toString());
+    } else if (endsOn=='After') {
+      const rule = new RRule({
+        freq: freq,
+        interval: interval,
+        byweekday: wkdays,
+        dtstart: new Date(moment(this.state.day).utc()),
+        count: occurences
+      });
+      this.props.setRrule(rule.toString());
+    }
+  
   };
 
 
@@ -127,6 +158,7 @@ export default class CustomRecurrence extends React.Component {
     const interval = this.state.interval;
     const endsOn = this.state.endsOn;
     const plural = (interval>1) ? true : false;
+    
     return (
       <div >
         <Dialog
@@ -226,7 +258,7 @@ export default class CustomRecurrence extends React.Component {
                     <DialogContent style={{paddingTop: 0}}>     
                       <FormControl >
                         <RadioGroup
-                          name="gender2"
+                          name="endson"
                           value={endsOn}
                           onChange={this.handleChange('endsOn')}
                         >
@@ -252,6 +284,40 @@ export default class CustomRecurrence extends React.Component {
                 </Grid>
             </Grid>
          </Grid>
+         {endsOn=='On' ? 
+          <DialogContent>
+            <InlineDatePicker
+              onlyCalendar
+              label="Until"
+              value={this.state.until}
+              onChange={this.handleChange('On')}
+            />
+            </DialogContent> : null }
+
+          {endsOn=='After' ? 
+            <DialogContent>
+              <TextField
+                id="outlined-number"
+                style = {{width: 50}}
+                value={occurences}
+                onChange={this.handleChange('occurences')}
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                margin="none"
+                inputProps={{ min: 1 }}
+              />
+                <TextField
+                  id="standard-read-only-input"
+                  style = {{width: 100}}
+                  value={(occurences>1) ? "Occurences" : "Occurence"}
+                  margin="none"
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+            </DialogContent> : null}
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Cancel
