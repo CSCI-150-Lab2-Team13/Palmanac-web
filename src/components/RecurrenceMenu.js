@@ -76,7 +76,7 @@ function RecurrenceMenu(props) {
                 margin="none"
                 
         />
-        {customRecurr ? <CustomRecurrence open={customRecurr} start={startDay} setRrule={props.setRrule} />: null}   
+        {customRecurr ? <CustomRecurrence open={customRecurr} start={startDay} setRrule={props.setRrule} close={setCustomRecurr}/>: null}   
         </Fragment>
     );
 }

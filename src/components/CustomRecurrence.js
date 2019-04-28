@@ -55,6 +55,7 @@ export default class CustomRecurrence extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
+    this.props.close(false)
   };
 
   setFrequency = (freq) => {
@@ -142,7 +143,7 @@ export default class CustomRecurrence extends React.Component {
       });
       this.props.setRrule(rule.toString());
     }
-  
+  this.handleClose();
   };
 
 
