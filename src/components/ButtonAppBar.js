@@ -42,11 +42,7 @@ class ButtonAppBar extends React.Component {
 
   toggleProfileModal = () => {
     this.setState({ anchorEl: null });
-    if (!this.state.isProfileModalOpen) {
-      this.setState({
-        isProfileModalOpen: !this.state.isProfileModalOpen,
-      });
-    }
+      this.setState({ isProfileModalOpen: !this.state.isProfileModalOpen });
   };
 
   render(){
@@ -89,7 +85,7 @@ class ButtonAppBar extends React.Component {
                   <MenuItem onClick={this.props.logout}>Logout</MenuItem>
                 </Menu>
 
-                {this.state.isProfileModalOpen ? <CalendarProfile open={this.props.pass} />: null}
+                {this.state.isProfileModalOpen ? <CalendarProfile open={this.state.isProfileModalOpen} toggle={this.toggleProfileModal}/>: null}
               </div>
         </Toolbar>
       </AppBar>

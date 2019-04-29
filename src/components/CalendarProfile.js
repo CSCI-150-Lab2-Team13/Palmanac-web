@@ -9,25 +9,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 class CalendarProfile extends React.Component {
   state = {
     open: false,
+    firstname: "Firstname here",
+    lastname: "Lastname here",
+    email: "Test@email.com",
   };
-
-  /*
-  componentWillRecieveProps(nextProps){
-    this.setState({ open: true });
-    alert("test");
-  };
-*/
 
   componentWillMount = () => {
       this.setState({ open: true});
-  };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
   };
 
   render() {
@@ -35,23 +23,20 @@ class CalendarProfile extends React.Component {
       <div>
         <Dialog
           open={this.state.open}
-          onClose={this.handleClose}
+          onClose={this.props.toggle}
           aria-labelledby="profile-dialog-title"
           aria-describedby="profile-dialog-description"
         >
           <DialogTitle id="profile-dialog-title">{"Profile"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="profile-dialog-description">
-              Profile Information will go here.
-            </DialogContentText>
+            <DialogContentText id="profile-dialog-firstname"> First name: {this.state.firstname} </DialogContentText>
+            <br></br>
+            <DialogContentText id="profile-dialog-lastname"> Last name: {this.state.lastname} </DialogContentText>
+            <br></br>
+            <DialogContentText id="profile-dialog-email"> Email: {this.state.email} </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={this.handleClose} color="primary" autoFocus>
-              Agree
-            </Button>
+            <Button onClick={this.props.toggle} color="primary" autoFocus> Close </Button>
           </DialogActions>
         </Dialog>
       </div>
