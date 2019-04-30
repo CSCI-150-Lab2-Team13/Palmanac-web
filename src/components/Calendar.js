@@ -4,7 +4,9 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
 import CalendarEntry from './CalendarEntry';
+import CalendarEdit from './CalendarEdit';
 import { firestore } from 'firebase';
+import firebaseAPI from '../firebase/firestoreAPI';
 import {rrulestr} from 'rrule';
 const localizer = BigCalendar.momentLocalizer(moment);
 
@@ -15,61 +17,64 @@ class Calendar extends React.Component {
       this.state = { 
           events: [
           ],
+          selectedEvent: null,
           isEventModalOpen: false,
           isEditModalOpen: false,
           currentEvent: null,
-          user: null,
+          fetched: false,
         }
     }
-    componentDidUpdate(prevProps, prevState) {
-      // Typical usage (don't forget to compare props):
-      if (this.props.user !== prevProps.user) {
-        firestore().collection('users').doc(this.props.user).collection('events')
-                .get()
-                .then(snapshot =>{
-                    snapshot.forEach(doc => {
-                        if(doc.data().start && doc.data().end)
-                        {
-                          const {start, end, rrule, ...rest} = doc.data();
-                          if (rrule){
-                            var timeDiff = moment(end).diff(moment(start));
-                            var rEvents = rrulestr(rrule).all();
-                            rEvents.forEach(event => {
-                              this.setState({
-                                ...this.state,
-                                events: [
-                                  ...this.state.events,
-                                  {
-                                    start: moment(event).toDate(),
-                                    end: moment(event).add(timeDiff).toDate(),
-                                    ...rest
-                                  }
-                                ]
-                              })
-                            })
-                          } else {
-                              this.setState({
-                              ...this.state,
-                              events: [
-                                ...this.state.events,
-                                {
-                                  start: moment(start).toDate(),
-                                  end: moment(end).toDate() ,
-                                  ...rest
-                                }
-                              ]
-                            })
-                        }
-                        } 
-                        
-                    });
-                })
-                .catch(err => {
-                    console.log('Error getting docs', err);
-                });
-      }
-    }
 
+    getEvents() {
+      console.log('getting events')
+      firestore().collection('users').doc(this.props.user).collection('events')
+      .get()
+      .then(snapshot =>{
+          snapshot.forEach(doc => {
+              console.log(doc.id)
+              if(doc.data().start && doc.data().end)
+              {
+                const {start, end, rrule, ...rest} = doc.data();
+                if (rrule){
+                  var timeDiff = moment(end).diff(moment(start));
+                  var rEvents = rrulestr(rrule).all();
+                  rEvents.forEach(event => {
+                    this.setState({
+                      ...this.state,
+                      events: [
+                        ...this.state.events,
+                        {
+                          start: moment(event).toDate(),
+                          end: moment(event).add(timeDiff).toDate(),
+                          id: doc.id,
+                          rrule: rrule,
+                          ...rest
+                        }
+                      ]
+                    })
+                  })
+                } else {
+                    this.setState({
+                    ...this.state,
+                    events: [
+                      ...this.state.events,
+                      {
+                        start: moment(start).toDate(),
+                        end: moment(end).toDate() ,
+                        id: doc.id,
+                        ...rest
+                      }
+                    ]
+                  })
+              }
+              }               
+          });
+      })
+      .catch(err => {
+          console.log('Error getting docs', err);
+      });
+      this.setState({fetched: true})
+    }
     toggleEventModal = event => {
         if (!this.state.isEditModalOpen) {
           this.setState({
@@ -93,7 +98,26 @@ class Calendar extends React.Component {
           })
       }
 
+      refetch = () => {
+        this.setState({
+          ...this.state,
+          events: [],
+          fetched: false
+        })
+      }
+
+      handleSelectedEvent = event => {
+        this.setState({
+          ...this.state,
+          selectedEvent: event,
+          isEditModalOpen: !this.state.isEditModalOpen
+        })
+      }
+
       render() {
+        if(this.props.user && !this.state.fetched){
+          this.getEvents()
+        }
         return (
           <div className="rbc-calendar">
             <BigCalendar
@@ -103,10 +127,11 @@ class Calendar extends React.Component {
               defaultView={BigCalendar.Views.MONTH}
               scrollToTime={new Date(1970, 1, 1, 6)}
               defaultDate={new Date()}
-              onSelectEvent={event => alert(event.title)}
+              onSelectEvent={this.handleSelectedEvent}
               onSelectSlot={this.toggleEventModal}
             />
-            {this.state.isEventModalOpen ? <CalendarEntry open={this.state.isEventModalOpen} toggle={this.toggleEventModal} events={this.state.currentEvent}/>: null}
+            {this.state.isEventModalOpen ? <CalendarEntry open={this.state.isEventModalOpen} toggle={this.toggleEventModal} events={this.state.currentEvent} update={this.refetch}/>: null}
+            {this.state.isEditModalOpen ? <CalendarEdit open={this.state.isEditModalOpen} toggle={this.handleSelectedEvent} event={this.state.selectedEvent} update={this.refetch}/>: null}
             </div>
         )
       }
