@@ -15,6 +15,7 @@ class Home extends Component {
         return (
             <div>
                 <ButtonAppBar logout={this.logout}/>
+                <br/>
                 <Calendar user={this.props.user}/>
             </div>
         )
