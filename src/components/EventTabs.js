@@ -53,11 +53,13 @@ class EventTabs extends React.Component {
                 <EventForm
                   start={this.props.start}
                   end={this.props.end}
+                  title={this.props.title}
                   setStartDate={this.props.setStartDate}
                   setEndDate={this.props.setEndDate}
                   handleChange={this.props.handleChange}
                   handleCheck={this.props.handleCheck}
                   recurring={this.props.recurring}
+                  rrule={this.props.rrule}
                   setRrule={this.props.setRrule}
                 />
             </TabContainer>}
@@ -70,6 +72,7 @@ class EventTabs extends React.Component {
                     handleChange={this.props.handleChange}
                     handleCheck={this.props.handleCheck}
                     recurring={this.props.recurring}
+                    rrule={this.props.rrule}
                     setRrule={this.props.setRrule}
                 />
             </TabContainer>}
