@@ -16,6 +16,7 @@ function EventForm(props) {
           <DialogContent>
             <Paper elevation={0}>
             <TextField
+              defaultValue={props.title}
               fullWidth={true}
               autoFocus
               margin="dense"
@@ -33,6 +34,7 @@ function EventForm(props) {
                   handleCheck={props.handleCheck}
                   recurring={props.recurring}
                   setRrule={props.setRrule}
+                  rrule={props.rrule}
                   />
                 
           </DialogContent></Paper>
@@ -64,6 +66,7 @@ return (
                   handleCheck={props.handleCheck}
                   recurring={props.recurring}
                   setRrule={props.setRrule}
+                  rrule={props.rrule}
                   />
         </DialogContent></Paper>
         </Fragment>

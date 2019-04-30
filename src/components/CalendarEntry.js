@@ -83,6 +83,7 @@ class CalendarEntry extends React.Component {
   saveEvent(e) {
     console.log(this.state);
     firebaseAPI.addEvent(fire.auth().currentUser.uid, this.state);
+    this.props.update()
     this.props.toggle(e)
   }
 
@@ -101,6 +102,7 @@ class CalendarEntry extends React.Component {
           setStartDate={this.setStartDate}
           start={this.state.start}
           end={this.state.end}
+          title={this.state.title}
           setEndDate={this.setEndDate}
           handleCheck={this.handleCheck}
           recurring={this.state.recurring}
