@@ -1,4 +1,5 @@
 import {firestore} from "firebase";
+import fire from "./Fire";
 export default class firestoreAPI {
     /**
      * Adding user to database,
@@ -95,7 +96,7 @@ export default class firestoreAPI {
 // sign Up to Firebase
 export const signUpToFirebase = (email, password) =>
     new Promise((resolve, reject) => {
-        firebase
+        fire
             .auth()
             .createUserWithEmailAndPassword(email, password)
             .then(() => resolve('User signup'))
@@ -109,7 +110,7 @@ export const signUpToFirebase = (email, password) =>
 // login to firebase
 export const loginToFirebase = async (email, password) =>
 new Promise((resolve, reject) => {
-    firebase
+    fire
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(resolve())
@@ -123,7 +124,7 @@ new Promise((resolve, reject) => {
 
 export const createUserDocinFirestore = (username, userUID, userEmail) => 
     new Promise ((resolve, reject) => {
-        const ref = firebase.firestore().collection('users')
+        const ref = firestore().collection('users')
 
         const verifyEmail = ref.where('Email', '==', userEmail).get()
             .then(results => {
@@ -166,7 +167,7 @@ export const createUserDocinFirestore = (username, userUID, userEmail) =>
 
 export const sendFirstandLastName = async (currentUser, firstName, lastName) =>{
     if (currentUser){
-        return firebase.firestore().collection('users').doc(currentUser)
+        return firestore().collection('users').doc(currentUser)
         .update({
             firstName:firstName,
             lastName:lastName,
@@ -184,26 +185,11 @@ export const sendFirstandLastName = async (currentUser, firstName, lastName) =>{
     }
 }
 
-// get User informations from currently signed in user
-export const getUserData = async () =>
-    new Promise((resolve, reject) => {
-        const user = firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                userUID = user.uid
-                userEmail = user.email
-                userName = user.displayName
-                userInformations = { userUID, userEmail, userName }
-                resolve(userInformations)
-            } else {
-                reject('No user currently signed in')
-            }
-        })
-    })
 
 // set displayName name to the current user profile
 export const setDisplayNameToFirebaseAccount = (userName) =>
 new Promise((resolve, reject) => {
-    const user = firebase.auth().currentUser
+    const user = fire.auth().currentUser
     if (user) {
         user.updateProfile({
             displayName: userName
@@ -217,17 +203,17 @@ new Promise((resolve, reject) => {
     }
 })
 
-export const createFireStoreDoc = async (username) => {
-    const { userUID, userEmail, userName } = await getUserData();
-    const setDisplayName = await setDisplayNameToFirebaseAccount(username);
-    const createUser = await createUserDocinFirestore(username, userUID, userEmail);
-}
+// export const createFireStoreDoc = async (username) => {
+//     const { userUID, userEmail, userName } = await getUserData();
+//     const setDisplayName = await setDisplayNameToFirebaseAccount(username);
+//     const createUser = await createUserDocinFirestore(username, userUID, userEmail);
+// }
 
 
-export const fetchDataforLogin = async () => {
-    const {userUID, userEmail, userName} = await getUserData();
-    return ({userEmail, userName})
-}
+// export const fetchDataforLogin = async () => {
+//     const {userUID, userEmail, userName} = await getUserData();
+//     return ({userEmail, userName})
+// }
 
 
 //-------------------
@@ -240,7 +226,7 @@ export const fetchDataforLogin = async () => {
 
 export const setDownloadLinktoFirebase = (link) => 
     new Promise((resolve,reject) => {
-        const user = firebase.auth().currentUser
+        const user = fire.auth().currentUser
         if (user)
         {
             user.updateProfile({
@@ -259,7 +245,7 @@ export const setDownloadLinktoFirebase = (link) =>
 
 // add profile picture download link to cloud firestore
 export const setDownloadLinktoFirestore = (downloadURL, username, imageName) => {
-    return firebase.firestore().collection('users').doc(username)
+    return firestore().collection('users').doc(username)
             .update({
                 photoURL:downloadURL,
                 photoName:imageName
@@ -284,7 +270,7 @@ export const setDownloadLinktoFirestore = (downloadURL, username, imageName) => 
 
 export const followUser = (currentUser, usertoAdd, firstName, lastName, photoURL) => 
     new Promise ((resolve, reject) => {
-        const ref = firebase.firestore().collection('users').doc(currentUser).collection('following')
+        const ref = firestore().collection('users').doc(currentUser).collection('following')
 
         ref.doc(usertoAdd).get()
                     .then(doc => {
@@ -315,7 +301,7 @@ export const addFollowertoUser = async (paltoAdd, username, firstName, lastName,
 
     // add current user to in the new contact contactList
     new Promise((resolve, reject) => {
-        const ref = firebase.firestore().collection('users').doc(paltoAdd).collection('followers')
+        const ref = firestore().collection('users').doc(paltoAdd).collection('followers')
 
         ref.doc(username).get()
             .then(doc =>{
@@ -343,29 +329,27 @@ export const addFollowertoUser = async (paltoAdd, username, firstName, lastName,
 //function to delete friends 
 export const deleteFriend = async (currentUser, palName) => {
     new Promise(async (resolve, reject) => {
-        await firebase
-            .firestore()
+        await firestore()
             .collection('users')
             .doc(currentUser)
             .collection('pals')
             .where('username', '==', palName)
             .get()
             .then(docs => {
-                firebase.firestore().doc(docs.docs[0].ref._documentPath._parts.join('/').toString()).set({
+                firestore().doc(docs.docs[0].ref._documentPath._parts.join('/').toString()).set({
                     delete: true
                 }, { merge: true })
             })
             .catch(err => reject(err))
         if (currentUser !== palName) {
-            await firebase
-                .firestore()
+            await firestore()
                 .collection('users')
-                .doc(contactName)
+                .doc(palName)
                 .collection('pals')
                 .where('username', '==', currentUser)
                 .get()
                 .then(docs => {
-                    firebase.firestore().doc(docs.docs[0].ref._documentPath._parts.join('/').toString()).set({
+                    firestore().doc(docs.docs[0].ref._documentPath._parts.join('/').toString()).set({
                         delete: true
                     }, { merge: true })
 
@@ -388,7 +372,7 @@ export const deleteFriend = async (currentUser, palName) => {
 export const checkFriendList = async (currentUser, palName)=>
 {   
 
-    const ref = firebase.firestore().collection('users').doc(currentUser).collection('following')
+    const ref = firestore().collection('users').doc(currentUser).collection('following')
     let results = []
     await ref
         .where('Username', '==',palName )
@@ -411,7 +395,7 @@ export const checkFriendList = async (currentUser, palName)=>
         return results
 }
 export const searchPals = async (search) => {
-    const ref = firebase.firestore().collection('users')
+    const ref = firestore().collection('users')
     let results = []
     // Query for exact match bewteen 'search' and a username
     await ref
