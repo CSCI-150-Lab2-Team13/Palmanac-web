@@ -13,12 +13,14 @@ import {RRule} from 'rrule';
 import CustomRecurrence from './CustomRecurrence';
 
 function RecurrenceMenu(props) {
+    let origFreq = props.rrule ? RRule.fromString(props.rrule).origOptions.freq : ""
     const dayOfWeek = moment(props.day).format("dddd");
     const dayOfMonth = moment(props.day).format("MMMM D");
     const startDay = moment(props.day).format();
-    const [recurrence, setRecurrence] = useState('');
+    const [recurrence, setRecurrence] = useState(origFreq);
     const [occurences, setOccurences] = useState(1);
     const [customRecurr, setCustomRecurr] = useState(false);
+
     const recurRule = (freq, occur) => {
         setRecurrence(freq);
         setOccurences(occur)
@@ -40,6 +42,7 @@ function RecurrenceMenu(props) {
     return(
         <Fragment>
             <Checkbox
+                checked={props.recurring}
                 icon={<AutorenewOutlined />} 
                 checkedIcon={<Autorenew/>} 
                 onChange={props.handleCheck('recurring')}
