@@ -5,17 +5,42 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { firestore } from 'firebase';
+import firebase from 'firebase/app';
 
 class CalendarProfile extends React.Component {
   state = {
     open: false,
-    firstname: "Firstname here",
-    lastname: "Lastname here",
-    email: "Test@email.com",
+    firstName: "",
+    lastName: "",
+    email: "",
+    photoURL: "",
+    user:  firebase.auth().currentUser.displayName,
   };
 
   componentWillMount = () => {
       this.setState({ open: true});
+      const ref = firebase.firestore().collection('users').doc(this.props.user);
+      ref.get().then(doc => {
+        if (doc.exists) {
+          let data = doc.data()
+          this.setState({firstName: data.firstName, lastName: data.lastname, photoURL: data.photoURL})
+        }
+        else { console.error("No such user!"); }
+      })
+      //.catch(error) {console.error("Error getting user: ", error)}
+  };
+
+  getEmail(){
+    const ref = firebase.firestore().collection('users').doc(this.state.user);
+    ref.get().then(doc => {
+      if (doc.exists) {
+        let data = doc.data()
+        this.setState({firstName: data.firstName, lastName: data.lastname, photoURL: data.photoURL})
+      }
+      else { console.error("No such user!"); }
+    })
+    //.catch(error) {console.error("Error getting user: ", error)}
   };
 
   render() {
@@ -29,9 +54,7 @@ class CalendarProfile extends React.Component {
         >
           <DialogTitle id="profile-dialog-title">{"Profile"}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="profile-dialog-firstname"> First name: {this.state.firstname} </DialogContentText>
-            <br></br>
-            <DialogContentText id="profile-dialog-lastname"> Last name: {this.state.lastname} </DialogContentText>
+            <DialogContentText id="profile-dialog-firstname"> Name: {this.state.firstName} + {this.state.lastName} </DialogContentText>
             <br></br>
             <DialogContentText id="profile-dialog-email"> Email: {this.state.email} </DialogContentText>
           </DialogContent>
