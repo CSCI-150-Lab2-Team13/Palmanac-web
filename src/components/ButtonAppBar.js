@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; //also change
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,6 +9,16 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
+//------- all pieces here
+import firebase from 'firebase/app';
+import 'firebase/app';
+import 'firebase/auth';
+import 'firebase/storage';
+import 'firebase/database';
+import 'firebase/firestore';
+import 'firebase/auth';
+
+import CalendarProfile from './CalendarProfile';
 
 const styles = {
   root: {
@@ -26,15 +36,23 @@ const styles = {
 class ButtonAppBar extends React.Component {
   state = {
     anchorEl: null,
+    isProfileModalOpen: false,
+    user: firebase.auth().currentUser.displayName, //<------ this right here
   };
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
+
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
-  
+
+  toggleProfileModal = () => {
+    this.setState({ anchorEl: null });
+      this.setState({ isProfileModalOpen: !this.state.isProfileModalOpen });
+  };
+
   render(){
     const {  anchorEl } = this.state;
     const open = Boolean(anchorEl);
@@ -71,9 +89,11 @@ class ButtonAppBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={this.toggleProfileModal}>Profile</MenuItem>
                   <MenuItem onClick={this.props.logout}>Logout</MenuItem>
                 </Menu>
+
+                {this.state.isProfileModalOpen ? <CalendarProfile open={this.state.isProfileModalOpen} toggle={this.toggleProfileModal}/>: null}
               </div>
         </Toolbar>
       </AppBar>
