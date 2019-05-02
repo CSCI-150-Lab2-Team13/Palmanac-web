@@ -56,6 +56,7 @@ function EventDTPicker(props) {
               handleCheck={props.handleCheck}
               recurring={props.recurring}
               day={props.start}
+              end={props.end}
               setRrule={props.setRrule}
               rrule={props.rrule}
               />
@@ -92,6 +93,7 @@ function ToDoDTPicker(props) {
               handleCheck={props.handleCheck}
               recurring={props.recurring}
               day={props.start}
+              end={props.end}
               setRrule={props.setRrule}
               />
             </Fragment>

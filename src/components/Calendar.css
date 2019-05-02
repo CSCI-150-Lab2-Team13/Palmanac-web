@@ -6,3 +6,13 @@
 .rbc-today {
   background-color: #d6e6ff;
 }
+
+.rbc-btn {
+  color: inherit;
+  font: Arial;
+  margin: 0;
+}
+
+.rbc-date-cell > a {
+  font-family: monospace;
+}
