@@ -42,7 +42,7 @@ export default class CustomRecurrence extends React.Component {
       interval: 1,
       occurences: 1,
       wkdays: [],
-      until: this.props.start,
+      until: this.props.end,
       endsOn: '',
       day: this.props.start
 
