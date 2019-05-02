@@ -19,6 +19,7 @@ class Register extends Component {
         this.state = {
           firstName: '',
           lastName: '',
+          username: '',
           email: '',
           emailcheck: '',
           password: '',
@@ -38,10 +39,10 @@ class Register extends Component {
                 const newUser = {
                     id: user.uid,
                     email: user.email,
-                    gender: "",
-                    age: 0,
-                    photoUrl: "",
-                    isNewUser: true
+                    firstName: this.state.username,
+                    lastName: this.state.lastName,
+                    Username: this.state.username,
+                    photoUrl: ""
                 };
                 firebaseAPI.addUser(newUser);
             })
@@ -85,7 +86,7 @@ class Register extends Component {
     };
 
     render() {
-        const { email, password, reppassword} = this.state;
+        const { email, password, username, reppassword} = this.state;
         return (
             <div>
                 <TextField
@@ -98,7 +99,16 @@ class Register extends Component {
                     onChange = {this.handleChange('lastName')}
                 />
                 <br/>
-        <ValidatorForm ref="form">
+            <ValidatorForm ref="form">
+            <TextValidator
+                    label="User name"
+                    onChange={this.handleChange('username')}
+                    name="username"
+                    value={username}
+                    validators={['required']}
+                    errorMessages={['User name is required']}
+                />
+                <br/>
                 <TextValidator
                     type="email"
                     label="Email"

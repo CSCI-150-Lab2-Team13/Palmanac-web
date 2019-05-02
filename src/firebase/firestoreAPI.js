@@ -7,7 +7,7 @@ export default class firestoreAPI {
      */
     static addUser(user) {
         if (user.id) {
-            return firestore().collection('users').doc(user.id).set(user)
+            return firestore().collection('users').doc(user.Username).set(user)
                 .then(() => {
                     console.log("Document successfully written!");
                 })
