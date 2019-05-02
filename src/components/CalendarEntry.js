@@ -19,48 +19,48 @@ class CalendarEntry extends React.Component {
 
   state = {
     title: '',
-    start: '',
-    end: '',
+    startTime: '',
+    endTime: '',
     desc: '',
-    rrule: '',
+    rruleString: '',
     recurring: false
   };
   
   componentDidMount() {
     this.setState({
       ...this.state,
-      start: moment(this.props.events.start).format(),
-      end: moment(this.props.events.end).format()
+      startTime: moment(this.props.events.start).format(),
+      endTime: moment(this.props.events.end).format()
     });
   };
 
   setStartDate = date => {
-    if(moment(date.format()).isAfter(this.state.end)){
+    if(moment(date.format()).isAfter(this.state.endTime)){
       this.setState({
         ...this.state,
-        start: date.format(),
-        end: date.format()
+        startTime: date.format(),
+        endTime: date.format()
       })
     } else {
       this.setState({
           ...this.state,
-          start: date.format()
+          startTime: date.format()
         })
     }
   };
 
   setEndDate = date => {
     
-    if(moment(date.format()).isBefore(this.state.start)){
+    if(moment(date.format()).isBefore(this.state.startTime)){
       this.setState({
         ...this.state,
-        start: date.format(),
-        end: date.format()
+        startTime: date.format(),
+        endTime: date.format()
       });
     } else {
       this.setState({
         ...this.state,
-        end: date.format()
+        endTime: date.format()
         })
     }
   };
@@ -68,7 +68,7 @@ class CalendarEntry extends React.Component {
   setRrule = rrule => {
     this.setState({
       ...this.state,
-      rrule: rrule
+      rruleString: rrule
     })
   };
 
@@ -82,7 +82,7 @@ class CalendarEntry extends React.Component {
 
   saveEvent(e) {
     console.log(this.state);
-    firebaseAPI.addEvent(fire.auth().currentUser.uid, this.state);
+    firebaseAPI.addEvent(fire.auth().currentUser.displayName, this.state);
     this.props.update()
     this.props.toggle(e)
   }
@@ -100,13 +100,14 @@ class CalendarEntry extends React.Component {
         <EventTabs 
           handleChange={this.handleChange}
           setStartDate={this.setStartDate}
-          start={this.state.start}
-          end={this.state.end}
+          start={this.state.startTime}
+          end={this.state.endTime}
           title={this.state.title}
           setEndDate={this.setEndDate}
           handleCheck={this.handleCheck}
           recurring={this.state.recurring}
           setRrule={this.setRrule}
+          rrule={this.state.rruleString}
 
         />
         

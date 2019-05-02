@@ -23,10 +23,10 @@ class CalendarEdit extends React.Component {
   
     state = {
       title: '',
-      start: '',
-      end: '',
+      startTime: '',
+      endTime: '',
       desc: '',
-      rrule: '',
+      rruleString: '',
       recurring: false
     };
     
@@ -34,10 +34,10 @@ class CalendarEdit extends React.Component {
       this.setState({
         ...this.state,
         title: this.props.event.title,
-        start: moment(this.props.event.start).format(),
-        end: moment(this.props.event.end).format(),
+        startTime: moment(this.props.event.start).format(),
+        endTime: moment(this.props.event.end).format(),
         desc: this.props.event.desc,
-        rrule: this.props.event.rrule ? this.props.event.rrule : '',
+        rruleString: this.props.event.rruleString ? this.props.event.rruleString : '',
         recurring: this.props.event.recurring
       });
     };
@@ -46,29 +46,29 @@ class CalendarEdit extends React.Component {
       if(moment(date.format()).isAfter(this.state.end)){
         this.setState({
           ...this.state,
-          start: date.format(),
-          end: date.format()
+          startTime: date.format(),
+          endTime: date.format()
         })
       } else {
         this.setState({
             ...this.state,
-            start: date.format()
+            startTime: date.format()
           })
       }
     };
   
     setEndDate = date => {
       
-      if(moment(date.format()).isBefore(this.state.start)){
+      if(moment(date.format()).isBefore(this.state.startTime)){
         this.setState({
           ...this.state,
-          start: date.format(),
-          end: date.format()
+          startTime: date.format(),
+          endTime: date.format()
         });
       } else {
         this.setState({
           ...this.state,
-          end: date.format()
+          endTime: date.format()
           })
       }
     };
@@ -76,7 +76,7 @@ class CalendarEdit extends React.Component {
     setRrule = rrule => {
       this.setState({
         ...this.state,
-        rrule: rrule
+        rruleString: rrule
       })
     };
   
@@ -90,13 +90,13 @@ class CalendarEdit extends React.Component {
   
     saveEvent(e) {
       console.log(this.state);
-      firebaseAPI.editEvent(fire.auth().currentUser.uid,this.props.event.id, this.state).then(()=>this.props.update());
+      firebaseAPI.editEvent(fire.auth().currentUser.displayName,this.props.event.id, this.state).then(()=>this.props.update());
       this.props.toggle(e)
     }
     
     deleteEvent(e) {
         console.log(this.props.event.id)
-        firebaseAPI.deleteEvent(fire.auth().currentUser.uid, this.props.event.id).then(()=>this.props.update());
+        firebaseAPI.deleteEvent(fire.auth().currentUser.displayName, this.props.event.id).then(()=>this.props.update());
         this.props.toggle(e)
     }
 
@@ -120,14 +120,14 @@ class CalendarEdit extends React.Component {
           <EventTabs 
             handleChange={this.handleChange}
             setStartDate={this.setStartDate}
-            start={this.state.start}
-            end={this.state.end}
+            start={this.state.startTime}
+            end={this.state.endTime}
             title={this.state.title}
             setEndDate={this.setEndDate}
             handleCheck={this.handleCheck}
             recurring={this.state.recurring}
             setRrule={this.setRrule}
-            rrule={this.state.rrule}
+            rrule={this.state.rruleString}
   
           />
 

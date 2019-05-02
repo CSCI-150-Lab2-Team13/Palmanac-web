@@ -6,6 +6,7 @@ import './Calendar.css';
 import CalendarEntry from './CalendarEntry';
 import CalendarEdit from './CalendarEdit';
 import { firestore } from 'firebase';
+import firebase from 'firebase/app';
 import firebaseAPI from '../firebase/firestoreAPI';
 import {rrulestr} from 'rrule';
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -27,17 +28,19 @@ class Calendar extends React.Component {
 
     getEvents() {
       console.log('getting events')
-      firestore().collection('users').doc(this.props.user).collection('events')
+      firestore().collection('users').doc(firebase.auth().currentUser.displayName).collection('events')
       .get()
       .then(snapshot =>{
           snapshot.forEach(doc => {
               console.log(doc.id)
-              if(doc.data().start && doc.data().end)
+              if((doc.data().start || doc.data().startTime) && (doc.data().end || doc.data().endTime))
               {
-                const {start, end, rrule, ...rest} = doc.data();
-                if (rrule){
+                const start = doc.data().startTime ? doc.data().startTime : doc.data().start;
+                const end = doc.data().endTime ? doc.data().endTime : doc.data().end;
+                const {rruleString, ...rest} = doc.data();
+                if (rruleString){
                   var timeDiff = moment(end).diff(moment(start));
-                  var rEvents = rrulestr(rrule).all();
+                  var rEvents = rrulestr(rruleString).all();
                   rEvents.forEach(event => {
                     this.setState({
                       ...this.state,
@@ -47,7 +50,7 @@ class Calendar extends React.Component {
                           start: moment(event).toDate(),
                           end: moment(event).add(timeDiff).toDate(),
                           id: doc.id,
-                          rrule: rrule,
+                          rruleString: rruleString,
                           ...rest
                         }
                       ]
