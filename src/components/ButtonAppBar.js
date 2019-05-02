@@ -5,10 +5,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Menu from '@material-ui/core/Menu';
+
+import CalendarProfile from './CalendarProfile';
 
 const styles = {
   root: {
@@ -26,15 +27,22 @@ const styles = {
 class ButtonAppBar extends React.Component {
   state = {
     anchorEl: null,
+    isProfileModalOpen: false,
   };
 
   handleMenu = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
+
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
-  
+
+  toggleProfileModal = () => {
+    this.setState({ anchorEl: null });
+      this.setState({ isProfileModalOpen: !this.state.isProfileModalOpen });
+  };
+
   render(){
     const {  anchorEl } = this.state;
     const open = Boolean(anchorEl);
@@ -42,9 +50,6 @@ class ButtonAppBar extends React.Component {
     <div >
       <AppBar position="static">
         <Toolbar>
-          <IconButton color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" color="inherit" >
             Palmanac
           </Typography>
@@ -71,9 +76,11 @@ class ButtonAppBar extends React.Component {
                   open={open}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={this.toggleProfileModal}>Profile</MenuItem>
                   <MenuItem onClick={this.props.logout}>Logout</MenuItem>
                 </Menu>
+
+                {this.state.isProfileModalOpen ? <CalendarProfile open={this.state.isProfileModalOpen} toggle={this.toggleProfileModal}/>: null}
               </div>
         </Toolbar>
       </AppBar>
