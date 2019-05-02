@@ -28,7 +28,7 @@ class CalendarProfile extends React.Component {
       ref.get().then(doc => {
         if (doc.exists) {
           let data = doc.data()
-          this.setState({firstName: data.firstName, lastName: data.lastName, photoURL: data.photoURL, email: data.Email})
+          this.setState({firstName: data.firstName, lastName: data.lastName, photoURL: data.photoURL, email: data.email})
         }
         else { console.error("No such user!"); }
       })

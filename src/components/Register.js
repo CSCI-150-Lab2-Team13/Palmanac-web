@@ -36,10 +36,14 @@ class Register extends Component {
                 return userCredential.user
             })
             .then(user => {
+                user.updateProfile({
+                    displayName: this.state.username})
+                    .then(() => {console.log(' set display name')})
+                    .catch((error) => {console.log('error')});
                 const newUser = {
                     id: user.uid,
                     email: user.email,
-                    firstName: this.state.username,
+                    firstName: this.state.firstName,
                     lastName: this.state.lastName,
                     Username: this.state.username,
                     photoUrl: ""
